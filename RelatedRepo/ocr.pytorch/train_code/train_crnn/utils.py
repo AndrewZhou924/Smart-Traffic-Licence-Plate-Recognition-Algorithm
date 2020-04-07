@@ -15,13 +15,15 @@ def get_acc(output, label):
     num_correct = (pred_label == label).sum().item()
     # print( pred_label.data.cpu().numpy() )
     # print( label.data.cpu().numpy() )
-    return 1.0*num_correct / total
+    return 1.0 * num_correct / total
 
-def adjust_learning_rate(optimizer,decay_rate = 0.97):
+
+def adjust_learning_rate(optimizer, decay_rate=0.97):
     for param_group in optimizer.param_groups:
-        param_group['lr'] = param_group['lr']*decay_rate
+        param_group['lr'] = param_group['lr'] * decay_rate
 
-def train(net, train_data, valid_data, num_epochs, optimizer, criterion,saver_freq = 50,saver_prefix = 'vgg16'):
+
+def train(net, train_data, valid_data, num_epochs, optimizer, criterion, saver_freq=50, saver_prefix='vgg16'):
     if torch.cuda.is_available():
         net = net.cuda()
     prev_time = datetime.now()
@@ -69,13 +71,14 @@ def train(net, train_data, valid_data, num_epochs, optimizer, criterion,saver_fr
                 valid_loss += loss.item()
                 valid_acc += get_acc(output, label)
             epoch_str = (
-                "Epoch %d. Train Loss: %f, Train Acc: %f, Valid Loss: %f, Valid Acc: %f, "
-                % (epoch, train_loss / len(train_data),
-                   train_acc / len(train_data), valid_loss / len(valid_data),
-                   valid_acc / len(valid_data)))
-            if valid_acc / len(valid_data)>best_acc:
+                    "Epoch %d. Train Loss: %f, Train Acc: %f, Valid Loss: %f, Valid Acc: %f, "
+                    % (epoch, train_loss / len(train_data),
+                       train_acc / len(train_data), valid_loss / len(valid_data),
+                       valid_acc / len(valid_data)))
+            if valid_acc / len(valid_data) > best_acc:
                 best_acc = valid_acc / len(valid_data)
-                torch.save( net.state_dict(), 'models/{}-{}-{}-0819-model-db.pth'.format(saver_prefix ,epoch + 1,int(best_acc*1000) ) )
+                torch.save(net.state_dict(),
+                           'models/{}-{}-{}-0819-model-db.pth'.format(saver_prefix, epoch + 1, int(best_acc * 1000)))
         else:
             epoch_str = ("Epoch %d. Train Loss: %f, Train Acc: %f, " %
                          (epoch, train_loss / len(train_data),
@@ -87,6 +90,7 @@ def train(net, train_data, valid_data, num_epochs, optimizer, criterion,saver_fr
         #     # another weight saver method
         #     torch.save(net.state_dict(),'models/{}-{}-0711-model.pth'.format(saver_prefix, epoch+1))
         adjust_learning_rate(optimizer)
+
 
 class strLabelConverter(object):
     """Convert between str and label.
@@ -129,7 +133,7 @@ class strLabelConverter(object):
                 #     print(char)
                 text = [
                     self.dict[ord(char.lower() if self._ignore_case else char)]
-                    for char in text# if char in self.dict.keys()
+                    for char in text  # if char in self.dict.keys()
                 ]
                 length = [len(text)]
             elif isinstance(text, collections.Iterable):
@@ -141,7 +145,7 @@ class strLabelConverter(object):
             print(e)
             for ch in text:
                 if ord(ch) not in self.dict.keys():
-                    print('Not Covering Char: {} - {}'.format(ch,ord(ch)))
+                    print('Not Covering Char: {} - {}'.format(ch, ord(ch)))
         return (torch.IntTensor(text), torch.IntTensor(length))
 
     def decode(self, t, length, raw=False):
@@ -159,7 +163,8 @@ class strLabelConverter(object):
         """
         if length.numel() == 1:
             length = length[0]
-            assert t.numel() == length, "text with length: {} does not match declared length: {}".format(t.numel(), length)
+            assert t.numel() == length, "text with length: {} does not match declared length: {}".format(t.numel(),
+                                                                                                         length)
             if raw:
                 return ''.join([chr(self.alphabet[i - 1]) for i in t])
             else:
@@ -171,7 +176,8 @@ class strLabelConverter(object):
                 return ''.join(char_list)
         else:
             # batch mode
-            assert t.numel() == length.sum(), "texts with length: {} does not match declared length: {}".format(t.numel(), length.sum())
+            assert t.numel() == length.sum(), "texts with length: {} does not match declared length: {}".format(
+                t.numel(), length.sum())
             texts = []
             index = 0
             for i in range(length.numel()):

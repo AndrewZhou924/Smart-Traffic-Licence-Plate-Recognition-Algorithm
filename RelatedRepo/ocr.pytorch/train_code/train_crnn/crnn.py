@@ -1,6 +1,7 @@
 import torch.nn as nn
 from collections import OrderedDict
 
+
 class BidirectionalLSTM(nn.Module):
 
     def __init__(self, nIn, nHidden, nOut):
@@ -61,7 +62,6 @@ class CRNN(nn.Module):
         self.rnn = nn.Sequential(
             BidirectionalLSTM(512, nh, nh),
             BidirectionalLSTM(nh, nh, nclass))
-
 
     def forward(self, input):
         # conv features
@@ -131,13 +131,11 @@ class CRNN_v2(nn.Module):
         # 256x2x32
         self.bn5 = nn.BatchNorm2d(256)
 
-
         # 256x2x32
 
         self.rnn = nn.Sequential(
             BidirectionalLSTM(512, nh, nh),
             BidirectionalLSTM(nh, nh, nclass))
-
 
     def forward(self, input):
         # conv features
@@ -150,7 +148,7 @@ class CRNN_v2(nn.Module):
 
         b, c, h, w = conv.size()
         assert h == 2, "the height of conv must be 2"
-        conv = conv.reshape([b,c*h,w])
+        conv = conv.reshape([b, c * h, w])
         conv = conv.permute(2, 0, 1)  # [w, b, c]
 
         # rnn features
@@ -161,31 +159,31 @@ class CRNN_v2(nn.Module):
 
 def conv3x3(nIn, nOut, stride=1):
     # "3x3 convolution with padding"
-    return nn.Conv2d( nIn, nOut, kernel_size=3, stride=stride, padding=1, bias=False )
+    return nn.Conv2d(nIn, nOut, kernel_size=3, stride=stride, padding=1, bias=False)
 
 
 class basic_res_block(nn.Module):
 
     def __init__(self, nIn, nOut, stride=1, downsample=None):
-        super( basic_res_block, self ).__init__()
+        super(basic_res_block, self).__init__()
         m = OrderedDict()
-        m['conv1'] = conv3x3( nIn, nOut, stride )
-        m['bn1'] = nn.BatchNorm2d( nOut )
-        m['relu1'] = nn.ReLU( inplace=True )
-        m['conv2'] = conv3x3( nOut, nOut )
-        m['bn2'] = nn.BatchNorm2d( nOut )
-        self.group1 = nn.Sequential( m )
+        m['conv1'] = conv3x3(nIn, nOut, stride)
+        m['bn1'] = nn.BatchNorm2d(nOut)
+        m['relu1'] = nn.ReLU(inplace=True)
+        m['conv2'] = conv3x3(nOut, nOut)
+        m['bn2'] = nn.BatchNorm2d(nOut)
+        self.group1 = nn.Sequential(m)
 
-        self.relu = nn.Sequential( nn.ReLU( inplace=True ) )
+        self.relu = nn.Sequential(nn.ReLU(inplace=True))
         self.downsample = downsample
 
     def forward(self, x):
         if self.downsample is not None:
-            residual = self.downsample( x )
+            residual = self.downsample(x)
         else:
             residual = x
-        out = self.group1( x ) + residual
-        out = self.relu( out )
+        out = self.group1(x) + residual
+        out = self.relu(out)
         return out
 
 
@@ -200,18 +198,18 @@ class CRNN_res(nn.Module):
         self.res1 = basic_res_block(64, 64)
         # 1x32x128
 
-        down1 = nn.Sequential(nn.Conv2d(64, 128, kernel_size=1, stride=2, bias=False),nn.BatchNorm2d(128))
-        self.res2_1 = basic_res_block( 64, 128, 2, down1 )
-        self.res2_2 = basic_res_block(128,128)
+        down1 = nn.Sequential(nn.Conv2d(64, 128, kernel_size=1, stride=2, bias=False), nn.BatchNorm2d(128))
+        self.res2_1 = basic_res_block(64, 128, 2, down1)
+        self.res2_2 = basic_res_block(128, 128)
         # 64x16x64
 
-        down2 = nn.Sequential(nn.Conv2d(128, 256, kernel_size=1, stride=2, bias=False),nn.BatchNorm2d(256))
+        down2 = nn.Sequential(nn.Conv2d(128, 256, kernel_size=1, stride=2, bias=False), nn.BatchNorm2d(256))
         self.res3_1 = basic_res_block(128, 256, 2, down2)
         self.res3_2 = basic_res_block(256, 256)
         self.res3_3 = basic_res_block(256, 256)
         # 128x8x32
 
-        down3 = nn.Sequential(nn.Conv2d(256, 512, kernel_size=1, stride=(2, 1), bias=False),nn.BatchNorm2d(512))
+        down3 = nn.Sequential(nn.Conv2d(256, 512, kernel_size=1, stride=(2, 1), bias=False), nn.BatchNorm2d(512))
         self.res4_1 = basic_res_block(256, 512, (2, 1), down3)
         self.res4_2 = basic_res_block(512, 512)
         self.res4_3 = basic_res_block(512, 512)
@@ -247,6 +245,7 @@ class CRNN_res(nn.Module):
         output = self.rnn(conv)
 
         return output
+
 
 if __name__ == '__main__':
     pass

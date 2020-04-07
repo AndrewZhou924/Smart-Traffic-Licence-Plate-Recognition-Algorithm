@@ -17,13 +17,13 @@ from online_test import val_model
 config.imgW = 800
 config.alphabet = config.alphabet_v2
 config.nclass = len(config.alphabet) + 1
-config.saved_model_prefix = 'CRNN-1010'
-config.train_infofile = ['path_to_train_infofile1.txt','path_to_train_infofile2.txt']
-config.val_infofile = 'path_to_test_infofile.txt'
+config.saved_model_prefix = 'CRNN-CCPD'
+config.train_infofile = ['./train.txt']
+config.val_infofile = './valid.txt'
 config.keep_ratio = True
 config.use_log = True
 config.pretrained_model = 'path_to_your_pretrained_model.pth'
-config.batchSize = 80
+config.batchSize = 25
 config.workers = 10
 config.adam = True
 # config.lr = 0.00003
@@ -68,7 +68,7 @@ test_dataset = mydataset.MyDataset(
     info_filename=config.val_infofile, transform=mydataset.resizeNormalize((config.imgW, config.imgH), is_test=True))
 
 converter = utils.strLabelConverter(config.alphabet)
-criterion = CTCLoss(reduction='sum',zero_infinity=True)
+criterion = CTCLoss(reduction='sum')
 # criterion = CTCLoss()
 best_acc = 0.9
 

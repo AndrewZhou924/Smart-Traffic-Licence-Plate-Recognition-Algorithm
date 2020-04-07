@@ -1,14 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData">
+  <component name="PublishConfigData" autoUpload="Always" serverName="lcx@vealocia.cn:24100">
     <serverData>
-      <paths name="192.168.1.107">
+      <paths name="dian_241_remote">
         <serverdata>
           <mappings>
-            <mapping deploy="project_2019" local="$PROJECT_DIR$/.." web="/" />
+            <mapping deploy="/home/lcx/ocr_pytorch" local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="lcx@vealocia.cn:24100">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/home/lcx/ocr_pytorch" local="$PROJECT_DIR$" />
           </mappings>
         </serverdata>
       </paths>
     </serverData>
+    <option name="myAutoUpload" value="ALWAYS" />
   </component>
 </project>

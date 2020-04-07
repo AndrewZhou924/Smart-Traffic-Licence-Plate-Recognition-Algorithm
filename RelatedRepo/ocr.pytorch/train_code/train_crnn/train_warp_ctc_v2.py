@@ -14,11 +14,12 @@ import mydataset
 import crnn as crnn
 import config
 from online_test import val_model
+
 config.imgW = 800
 config.alphabet = config.alphabet_v2
 config.nclass = len(config.alphabet) + 1
 config.saved_model_prefix = 'CRNN-1010'
-config.train_infofile = ['path_to_train_infofile1.txt','path_to_train_infofile2.txt']
+config.train_infofile = ['path_to_train_infofile1.txt', 'path_to_train_infofile2.txt']
 config.val_infofile = 'path_to_test_infofile.txt'
 config.keep_ratio = True
 config.use_log = True
@@ -31,7 +32,7 @@ import os
 import datetime
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "0"
-log_filename = os.path.join('log/','loss_acc-'+config.saved_model_prefix + '.log')
+log_filename = os.path.join('log/', 'loss_acc-' + config.saved_model_prefix + '.log')
 if not os.path.exists('debug_files'):
     os.mkdir('debug_files')
 if not os.path.exists(config.saved_model_dir):
@@ -84,7 +85,7 @@ def weights_init(m):
 
 
 crnn = crnn.CRNN(config.imgH, config.nc, config.nclass, config.nh)
-if config.pretrained_model!='' and os.path.exists(config.pretrained_model):
+if config.pretrained_model != '' and os.path.exists(config.pretrained_model):
     print('loading pretrained model from %s' % config.pretrained_model)
     crnn.load_state_dict(torch.load(config.pretrained_model))
 else:
@@ -124,7 +125,8 @@ def val(net, dataset, criterion, max_iter=100):
     for p in net.parameters():
         p.requires_grad = False
 
-    num_correct,  num_all = val_model(config.val_infofile,net,True,log_file='compare-'+config.saved_model_prefix+'.log')
+    num_correct, num_all = val_model(config.val_infofile, net, True,
+                                     log_file='compare-' + config.saved_model_prefix + '.log')
     accuracy = num_correct / num_all
 
     print('ocr_acc: %f' % (accuracy))
@@ -153,7 +155,7 @@ def trainBatch(net, criterion, optimizer):
     preds_size = Variable(torch.IntTensor([preds.size(0)] * batch_size))  # seqLength x batchSize
     cost = criterion(preds, text, preds_size, length) / batch_size
     if torch.isnan(cost):
-        print(batch_size,cpu_texts)
+        print(batch_size, cpu_texts)
     else:
         net.zero_grad()
         cost.backward()
@@ -183,5 +185,3 @@ for epoch in range(config.niter):
             f.write('train_loss:{}\n'.format(loss_avg.val()))
 
     val(crnn, test_dataset, criterion)
-
-

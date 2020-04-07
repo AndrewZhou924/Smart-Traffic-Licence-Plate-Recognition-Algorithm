@@ -10,6 +10,7 @@ import random
 from crnn import CRNN
 import config
 
+
 # copy from mydataset
 class resizeNormalize(object):
     def __init__(self, size, interpolation=Image.LANCZOS, is_test=True):
@@ -38,6 +39,7 @@ class resizeNormalize(object):
             tmp[:, :, start:start + w_real] = img
             img = tmp
         return img
+
 
 # copy from utils
 class strLabelConverter(object):
@@ -95,6 +97,7 @@ class strLabelConverter(object):
                 index += l
             return texts
 
+
 # recognize api
 class PytorchOcr():
     def __init__(self, model_path):
@@ -115,11 +118,11 @@ class PytorchOcr():
         self.converter = strLabelConverter(self.alphabet)
 
     def recognize(self, img):
-        h,w = img.shape[:2]
+        h, w = img.shape[:2]
         if len(img.shape) == 3:
             img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         image = Image.fromarray(img)
-        transformer = resizeNormalize((int(w/h*32), 32))
+        transformer = resizeNormalize((int(w / h * 32), 32))
         image = transformer(image)
         image = image.view(1, *image.size())
         image = Variable(image)
@@ -146,7 +149,3 @@ if __name__ == '__main__':
     h, w = img.shape[:2]
     res = recognizer.recognize(img)
     print(res)
-
-
-
-

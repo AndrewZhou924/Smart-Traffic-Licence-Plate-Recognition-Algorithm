@@ -1,12 +1,12 @@
 import keys
 
-train_infofile = 'data_set/infofile_train_10w.txt'
+train_infofile = './train.txt'
 train_infofile_fullimg = ''
-val_infofile = 'data_set/infofile_test.txt'
+val_infofile = './valid.txt'
 alphabet = keys.alphabet
 alphabet_v2 = keys.alphabet_v2
 workers = 4
-batchSize = 50
+batchSize = 25
 imgH = 32
 imgW = 280
 nc = 1

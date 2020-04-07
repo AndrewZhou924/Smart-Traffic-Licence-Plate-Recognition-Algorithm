@@ -180,12 +180,3 @@ if __name__ == '__main__':
     # print(cal_sim_all(allimg['20190113_092023.jpg'], allimg['20190113_092023.jpg']))
 
     # genpair(12)
-
-
-
-
-
-
-
-
-
