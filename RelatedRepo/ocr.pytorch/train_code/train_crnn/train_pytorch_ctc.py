@@ -142,6 +142,7 @@ def val(net, dataset, criterion, max_iter=100):
 def trainBatch(net, criterion, optimizer):
     data = train_iter.next()
     cpu_images, cpu_texts = data
+    # print('cpu_texts:', cpu_texts)
     batch_size = cpu_images.size(0)
     image = cpu_images.to(device)
 

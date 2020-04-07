@@ -147,7 +147,7 @@ def data_tf_fullimg(img, loc):
 
 
 class MyDataset(Dataset):
-    def __init__(self, info_filename, train=True, transform=data_tf, target_transform=None, remove_blank=False):
+    def __init__(self, info_filename, train=True, transform=data_tf, target_transform=None, remove_blank=True):
         super(Dataset, self).__init__()
         self.transform = transform
         self.target_transform = target_transform

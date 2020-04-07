@@ -108,6 +108,7 @@ class strLabelConverter(object):
         if self._ignore_case:
             alphabet = alphabet.lower()
         self.alphabet = alphabet
+        print(self.alphabet)
         self.alphabet.append(ord('_'))  # for `-1` index
         # print(self.alphabet)
 
@@ -115,7 +116,7 @@ class strLabelConverter(object):
         for i, char in enumerate(alphabet):
             # NOTE: 0 is reserved for 'blank' required by wrap_ctc
             self.dict[char] = i + 1
-
+        print('keys',self.dict.keys())
     def encode(self, text):
         """Support batch or single str.
 
